@@ -60,11 +60,11 @@ CREATE TABLE staging_songs(
 songplay_table_create = ("""
 CREATE TABLE songplays(
     songplay_id INT IDENTITY(0,1) PRIMARY KEY,
-    start_time TIMESTAMP,
-    user_id INT,
+    start_time TIMESTAMP NOT NULL,
+    user_id INT NOT NULL,
     level VARCHAR,
-    song_id VARCHAR,
-    artist_id VARCHAR,
+    song_id VARCHAR NOT NULL,
+    artist_id VARCHAR NOT NULL,
     session_id INT,
     location VARCHAR,
     user_agent VARCHAR
@@ -120,7 +120,7 @@ copy staging_events
     from {}
     iam_role {}
     json {}
-""").format(config['S3']['LOG_DATA'], config['IAM_ROLE']['ARN'], config['S3']['LOG_JSONPATH'])
+""").format(config['S3']['LOG_DATA'], config['IAM_ROLE']['arn'], config['S3']['LOG_JSONPATH'])
 
 
 staging_songs_copy = ("""
@@ -190,14 +190,14 @@ INSERT INTO artists(artist_id, name, location, lattitude, longitude)
 time_table_insert = ("""
 INSERT INTO time(start_time, hour, day, week, month, year, weekday)
     SELECT DISTINCT 
-            start_time,
+            timestamp 'epoch' + (se.ts/1000) * interval '1 second' AS start_time,
             EXTRACT (hour FROM start_time),
             EXTRACT (day FROM start_time),
             EXTRACT (week FROM start_time),
             EXTRACT (month FROM start_time),
             EXTRACT (year FROM start_time),
             EXTRACT (weekday FROM start_time)
-    FROM songplays
+    FROM staging_events se
 """)
 
 # QUERY LISTS

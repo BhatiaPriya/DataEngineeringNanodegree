@@ -73,17 +73,22 @@ Using the song and log datasets, I've created a star schema optimized for querie
 
 ### Fact Table
 songplays - records in log data associated with song plays i.e. records with page NextSong
+
 various columns: songplay_id, start_time, user_id, level, song_id, artist_id, session_id, location, user_agent
 
 ### Dimension Tables
 users - users in the app
+
 various columns: user_id, first_name, last_name, gender, level
 
 songs - songs in music database
+
 various columns: song_id, title, artist_id, year, duration
 
 artists - artists in music database
+
 various columns: artist_id, name, location, latitude, longitude
 
 time - timestamps of records in songplays broken down into specific units
+
 various columns: start_time, hour, day, week, month, year, weekday
